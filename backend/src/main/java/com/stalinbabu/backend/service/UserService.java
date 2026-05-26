@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.stalinbabu.backend.dto.SignupRequest;
 import com.stalinbabu.backend.dto.UserResponse;
+import com.stalinbabu.backend.exception.EmailAlreadyExistsException;
 import com.stalinbabu.backend.model.User;
 import com.stalinbabu.backend.repository.UserRepository;
 
@@ -30,6 +31,18 @@ public class UserService {
 
     @SuppressWarnings("null")
     public UserResponse signup(SignupRequest request) {
+
+        if (
+            userRepository.existsByEmail(
+                request.getEmail()
+            )
+        ) {
+
+            throw new EmailAlreadyExistsException(
+                "Email already exists"
+            );
+
+        }
 
         User user = new User();
 
