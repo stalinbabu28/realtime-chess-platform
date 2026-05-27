@@ -3,6 +3,7 @@ package com.stalinbabu.backend.service;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.stalinbabu.backend.dto.SignupRequest;
@@ -15,9 +16,14 @@ import com.stalinbabu.backend.repository.UserRepository;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder
+    ) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @SuppressWarnings("null")
@@ -48,7 +54,11 @@ public class UserService {
 
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+        user.setPassword(
+            passwordEncoder.encode(
+                request.getPassword()
+            )
+        );
 
         User saved = Objects.requireNonNull(userRepository.save(user));
 
