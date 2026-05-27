@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.stalinbabu.backend.dto.LoginRequest;
 import com.stalinbabu.backend.dto.SignupRequest;
 import com.stalinbabu.backend.dto.UserResponse;
 import com.stalinbabu.backend.service.UserService;
@@ -25,6 +26,15 @@ public class AuthController {
     ) {
 
         return userService.signup(request);
+
+    }
+
+    @PostMapping("/login")
+    public String login(
+            @RequestBody LoginRequest request
+    ) {
+
+        return userService.login(request);
 
     }
 
