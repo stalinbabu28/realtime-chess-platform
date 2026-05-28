@@ -2,14 +2,17 @@ package com.stalinbabu.backend.service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.stalinbabu.backend.dto.LoginRequest;
+import com.stalinbabu.backend.dto.ProfileResponse;
 import com.stalinbabu.backend.dto.SignupRequest;
 import com.stalinbabu.backend.dto.UserResponse;
 import com.stalinbabu.backend.exception.EmailAlreadyExistsException;
+import com.stalinbabu.backend.exception.InvalidCredentialsException;
 import com.stalinbabu.backend.model.User;
 import com.stalinbabu.backend.repository.UserRepository;
 
@@ -18,22 +21,29 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public UserService(
             UserRepository userRepository,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
+            JwtService jwtService
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     @SuppressWarnings("null")
-    public User createUser(User user) {
-        return Objects.requireNonNull(userRepository.save(user));
+    public UserResponse createUser(User user) {
+        User saved = Objects.requireNonNull(userRepository.save(user));
+        return toUserResponse(saved);
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserResponse> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(this::toUserResponse)
+                .collect(Collectors.toList());
     }
 
     public String login(LoginRequest request) {
@@ -44,10 +54,7 @@ public class UserService {
             request.getEmail()
         )
         .orElseThrow(
-            () ->
-            new RuntimeException(
-                "Invalid credentials"
-            )
+            () -> new InvalidCredentialsException("Invalid credentials")
         );
 
     if (!passwordEncoder.matches(
@@ -55,13 +62,33 @@ public class UserService {
             user.getPassword()
         )
     ) {
-        throw new RuntimeException(
-            "Invalid credentials"
-        );
+        throw new InvalidCredentialsException("Invalid credentials");
     }
 
-    return "Login successful";
+    return jwtService.generateToken(user.getEmail());
 
+    }
+
+    public ProfileResponse getProfile(String email) {
+
+        User user = userRepository.findByEmail(email).orElseThrow();
+
+        return new ProfileResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail()
+        );
+
+    }
+
+    private UserResponse toUserResponse(User user) {
+        return new UserResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getEloRating(),
+                user.getCreatedAt()
+        );
     }
 
     @SuppressWarnings("null")
