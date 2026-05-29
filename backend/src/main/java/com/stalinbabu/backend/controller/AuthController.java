@@ -10,6 +10,8 @@ import com.stalinbabu.backend.dto.SignupRequest;
 import com.stalinbabu.backend.dto.UserResponse;
 import com.stalinbabu.backend.service.UserService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -22,7 +24,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public UserResponse signup(
-            @RequestBody SignupRequest request
+            @Valid @RequestBody SignupRequest request
     ) {
 
         return userService.signup(request);
@@ -31,7 +33,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public String login(
-            @RequestBody LoginRequest request
+            @Valid @RequestBody LoginRequest request
     ) {
 
         return userService.login(request);
