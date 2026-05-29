@@ -49,6 +49,32 @@ public class GlobalExceptionHandler {
                 );
     }
 
+    @ExceptionHandler(RoomNotFoundException.class)
+    public ResponseEntity<?> handleRoomNotFound(
+            RoomNotFoundException ex
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(
+                        Map.of(
+                                "message", ex.getMessage()
+                        )
+                );
+    }
+
+    @ExceptionHandler(RoomNotWaitingException.class)
+    public ResponseEntity<?> handleRoomNotWaiting(
+            RoomNotWaitingException ex
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(
+                        Map.of(
+                                "message", ex.getMessage()
+                        )
+                );
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationErrors(
             MethodArgumentNotValidException ex

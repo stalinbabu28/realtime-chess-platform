@@ -1,0 +1,9 @@
+package com.stalinbabu.backend.exception;
+
+public class RoomNotFoundException extends RuntimeException {
+
+    public RoomNotFoundException(String message) {
+        super(message);
+    }
+
+}
