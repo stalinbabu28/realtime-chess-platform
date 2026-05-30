@@ -1,10 +1,12 @@
 package com.stalinbabu.backend.controller;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.stalinbabu.backend.dto.CreateRoomRequest;
 import com.stalinbabu.backend.dto.JoinRoomRequest;
 import com.stalinbabu.backend.model.Room;
 import com.stalinbabu.backend.service.RoomService;
@@ -25,18 +27,28 @@ public class RoomController {
     }
 
     @PostMapping("/create")
-    public Room createRoom() {
+        public Room createRoom(
+            Authentication authentication,
+            @Valid @RequestBody CreateRoomRequest request
+        ) {
 
-        return roomService.createRoom();
+        return roomService.createRoom(
+            authentication.getName(),
+            request.getPreferredColor()
+        );
 
     }
 
     @PostMapping("/join")
-    public Room joinRoom(
+        public Room joinRoom(
+            Authentication authentication,
             @Valid @RequestBody JoinRoomRequest request
     ) {
 
-        return roomService.joinRoom(request.getRoomCode());
+        return roomService.joinRoom(
+            authentication.getName(),
+            request.getRoomCode()
+        );
 
     }
 

@@ -21,6 +21,10 @@ public class Room {
 
     private String status;
 
+    private Long whitePlayerId;
+
+    private Long blackPlayerId;
+
     private LocalDateTime createdAt;
 
     public Room() {
@@ -49,12 +53,28 @@ public class Room {
         return status;
     }
 
+    public Long getWhitePlayerId() {
+        return whitePlayerId;
+    }
+
+    public Long getBlackPlayerId() {
+        return blackPlayerId;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public void setWhitePlayerId(Long whitePlayerId) {
+        this.whitePlayerId = whitePlayerId;
+    }
+
+    public void setBlackPlayerId(Long blackPlayerId) {
+        this.blackPlayerId = blackPlayerId;
     }
 
 }

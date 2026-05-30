@@ -46,6 +46,12 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    public Long getUserIdByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .map(User::getId)
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid credentials"));
+    }
+
     public String login(LoginRequest request) {
 
     User user =

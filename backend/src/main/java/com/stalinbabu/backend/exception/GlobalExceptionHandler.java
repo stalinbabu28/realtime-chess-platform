@@ -75,6 +75,19 @@ public class GlobalExceptionHandler {
                 );
     }
 
+    @ExceptionHandler(RoomFullException.class)
+    public ResponseEntity<?> handleRoomFull(
+            RoomFullException ex
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(
+                        Map.of(
+                                "message", ex.getMessage()
+                        )
+                );
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationErrors(
             MethodArgumentNotValidException ex
